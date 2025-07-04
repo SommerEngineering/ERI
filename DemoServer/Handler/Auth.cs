@@ -27,7 +27,7 @@ public static class AuthHandler
 
     public static void AddAuthHandlers(this WebApplication app)
     {
-        app.Use(EnsureAuth);
+        // app.Use(EnsureAuth);
         app.MapGet("/auth/methods", GetAuthMethods)
             .WithDescription("Get the available authentication methods.")
             .WithName("GetAuthMethods")
@@ -43,7 +43,13 @@ public static class AuthHandler
 
     private static async Task EnsureAuth(HttpContext context, RequestDelegate next)
     {
-        if(context.Request.Path.StartsWithSegments("/swagger"))
+        if(context.Request.Path.StartsWithSegments("/scaler"))
+        {
+            await next(context);
+            return;
+        }
+        
+        if(context.Request.Path.StartsWithSegments("/openapi"))
         {
             await next(context);
             return;
